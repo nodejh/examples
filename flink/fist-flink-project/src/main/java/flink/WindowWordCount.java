@@ -20,13 +20,13 @@ public class WindowWordCount {
 
         DataStream<Tuple2<String, Integer>> dataStream = source
                 .flatMap(new Splitter())
-                // .keyBy(value -> value.f0)
-                .keyBy(new KeySelector<Tuple2<String, Integer>, Object>() {
-                    @Override
-                    public String getKey(Tuple2<String, Integer> value) throws Exception {
-                        return value.f0;
-                    }
-                })
+                .keyBy(value -> value.f0)
+                // .keyBy(new KeySelector<Tuple2<String, Integer>, Object>() {
+                //     @Override
+                //     public String getKey(Tuple2<String, Integer> value) throws Exception {
+                //         return value.f0;
+                //     }
+                // })
                 .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
                 .sum(1);
 
@@ -38,11 +38,9 @@ public class WindowWordCount {
     public static class Splitter implements FlatMapFunction<String, Tuple2<String, Integer>> {
         @Override
         public void flatMap(String sentence, Collector<Tuple2<String, Integer>> out) throws Exception {
-            // System.out.println("sentence " + sentence);
             for (String word : sentence.split(" ")) {
                 out.collect(new Tuple2<String, Integer>(word, 1));
             }
-            // System.out.println("out " + out);
         }
     }
 
