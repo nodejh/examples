@@ -1,0 +1,13 @@
+name: Theme Action
+on: 
+  push:
+    branches:
+      - main
+      - master
+jobs:
+  build_example_site:
+    name: Build Example Site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: nodejh/hugo-theme-mini/exampleSite
+        run: ls
