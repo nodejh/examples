@@ -1,7 +1,6 @@
-package flink;
+package com.flink.demo;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -19,16 +18,10 @@ public class WindowWordCount {
         DataStreamSource<String> source = env.socketTextStream("localhost", 9999);
 
         DataStream<Tuple2<String, Integer>> dataStream = source
-                .flatMap(new Splitter())
-                .keyBy(value -> value.f0)
-                // .keyBy(new KeySelector<Tuple2<String, Integer>, Object>() {
-                //     @Override
-                //     public String getKey(Tuple2<String, Integer> value) throws Exception {
-                //         return value.f0;
-                //     }
-                // })
-                .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
-                .sum(1);
+            .flatMap(new Splitter())
+            .keyBy(value -> value.f0)
+            .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
+            .sum(1);
 
         dataStream.print();
 
